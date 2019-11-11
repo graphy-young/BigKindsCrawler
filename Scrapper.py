@@ -102,8 +102,8 @@ class Scrapper():
                 content = self.driver.find_element_by_css_selector("div.news-detail__content").text
                 scrapped_at = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 try:
-                    counter += 1
-                    query = '''INSERT INTO `%s`(self.counter, id, title, written_at, content, scrapped_at)
+                    self.counter += 1
+                    query = '''INSERT INTO `%s`(counter, id, title, written_at, content, scrapped_at)
                                 VALUES (%s, %s, %s, %s, %s, %s);'''
                     values = (int(year), self.counter, id, title, written_at, content, scrapped_at)
                     cursor.execute(query, values)
