@@ -104,7 +104,7 @@ class Scrapper():
                 try:
                     counter += 1
                     query = '''INSERT INTO `%s`(counter, id, title, written_at, content, scrapped_at)
-                                VALUES (%s, %s, %s, %s, %s);'''
+                                VALUES (%s, %s, %s, %s, %s, %s);'''
                     values = (int(year), counter, id, title, written_at, content, scrapped_at)
                     cursor.execute(query, values)
                     mysql.commit()
