@@ -20,6 +20,8 @@ cursor = mysql.cursor()
 
 class Scrapper():
 
+    counter = 0
+
     def setUp(self):
         options = webdriver.ChromeOptions()
         #options.add_argument("headless") #without window
@@ -32,7 +34,8 @@ class Scrapper():
 
     def test(self, kwd, year, start):
         query = 'CREATE TABLE IF NOT EXISTS `%s`.' % keys.mysql_database + '''`%s` (
-                id VARCHAR(30) primary key NOT NULL,
+                counter INT PRIMARY KEY NOT NULL,
+                id VARCHAR(30) NOT NULL,
                 title varchar(100) NOT NULL,
                 written_at DATE NOT NULL,
                 content TEXT NOT NULL,
@@ -99,9 +102,10 @@ class Scrapper():
                 content = self.driver.find_element_by_css_selector("div.news-detail__content").text
                 scrapped_at = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 try:
-                    query = '''INSERT INTO `%s`(id, title, written_at, content, scrapped_at)
+                    counter += 1
+                    query = '''INSERT INTO `%s`(counter, id, title, written_at, content, scrapped_at)
                                 VALUES (%s, %s, %s, %s, %s);'''
-                    values = (int(year), id, title, written_at, content, scrapped_at)
+                    values = (int(year), counter, id, title, written_at, content, scrapped_at)
                     cursor.execute(query, values)
                     mysql.commit()
                 except Exception as e:
