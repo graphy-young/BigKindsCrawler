@@ -103,9 +103,9 @@ class Scrapper():
                 scrapped_at = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 try:
                     counter += 1
-                    query = '''INSERT INTO `%s`(counter, id, title, written_at, content, scrapped_at)
+                    query = '''INSERT INTO `%s`(self.counter, id, title, written_at, content, scrapped_at)
                                 VALUES (%s, %s, %s, %s, %s, %s);'''
-                    values = (int(year), counter, id, title, written_at, content, scrapped_at)
+                    values = (int(year), self.counter, id, title, written_at, content, scrapped_at)
                     cursor.execute(query, values)
                     mysql.commit()
                 except Exception as e:
