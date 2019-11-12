@@ -37,7 +37,7 @@ class Scrapper():
                 counter INT PRIMARY KEY NOT NULL,
                 id VARCHAR(30) NOT NULL,
                 title varchar(100) NOT NULL,
-                written_at DATE NOT NULL,
+                written_at DATE,
                 content TEXT NOT NULL,
                 scrapped_at datetime NOT NULL
             );''' % year
@@ -95,7 +95,10 @@ class Scrapper():
                 for hitem in self.driver.find_elements_by_css_selector("span.news-detail__header-item"):
                     temp += hitem.text + "\t"
                 headline = temp
-                written_at = re.findall('\d\d\d\d-\d\d-\d\d', headline)[0]
+                try:
+                    written_at = re.findall('\d\d\d\d-\d\d-\d\d', headline)[0]
+                except Exception as e:
+                    written_at = None
                 #fw.write(temp + "@@@@@\n")
                 #fw.write(self.driver.find_element_by_css_selector("div.news-detail__content").text)
                 #fw.close()
