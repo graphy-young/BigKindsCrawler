@@ -19,9 +19,7 @@ mysql = pymysql.connect(
 cursor = mysql.cursor()
 
 class Scrapper():
-
-    counter = 0
-
+    
     def setUp(self):
         options = webdriver.ChromeOptions()
         #options.add_argument("headless") #without window
@@ -32,7 +30,8 @@ class Scrapper():
         self.driver.set_page_load_timeout(30)
         #self.driver.implicitly_wait()
 
-    def test(self, kwd, year, start):
+    def test(self, kwd, year, start, end=None):
+        counter = start
         query = 'CREATE TABLE IF NOT EXISTS `%s`.' % keys.mysql_database + '''`%s` (
                 counter INT PRIMARY KEY NOT NULL,
                 id VARCHAR(30) NOT NULL,
@@ -104,15 +103,27 @@ class Scrapper():
                 #fw.close()
                 content = self.driver.find_element_by_css_selector("div.news-detail__content").text
                 scrapped_at = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                try:
-                    self.counter += 1
-                    query = '''INSERT INTO `%s`(counter, id, title, written_at, content, scrapped_at)
-                                VALUES (%s, %s, %s, %s, %s, %s);'''
-                    values = (int(year), self.counter, id, title, written_at, content, scrapped_at)
-                    cursor.execute(query, values)
-                    mysql.commit()
-                except Exception as e:
-                    print(e)
+                self.counter += 1
+                query = '''INSERT INTO `%s`(counter, id, title, written_at, content, scrapped_at)
+                            VALUES (%s, %s, %s, %s, %s, %s);'''
+                values = (int(year), self.counter, id, title, written_at, content, scrapped_at)
+                while(True):
+                    try:
+                        cursor.execute(query, values)
+                        mysql.commit()
+                        break
+                    except Exception as e:
+                        print(e)
+                        self.counter -= 1
+                        mysql = pymysql.connect(
+                                                host = keys.mysql_host, 
+                                                port = keys.mysql_port, 
+                                                user = keys.mysql_user, 
+                                                password = keys.mysql_password, 
+                                                database = keys.mysql_database
+                                                )
+                        cursor = mysql.cursor()
+                print(temp, self.counter + 'articles crawled')
                 for a in self.driver.find_elements_by_css_selector("button.btn.btn-default"):
                     if (a.text == "닫기"):
                         a.click()
