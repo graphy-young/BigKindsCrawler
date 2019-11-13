@@ -104,26 +104,45 @@ class Scrapper():
                 content = self.driver.find_element_by_css_selector("div.news-detail__content").text
                 scrapped_at = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 self.counter += 1
-                query = '''INSERT INTO `%s`(counter, id, title, written_at, content, scrapped_at)
-                            VALUES (%s, %s, %s, %s, %s, %s);'''
-                values = (int(year), self.counter, id, title, written_at, content, scrapped_at)
+                q = 'SELECT count(counter) FROM `%s` where counter = %s' % (int(year), counter)
                 while(True):
                     try:
-                        cursor.execute(query, values)
-                        mysql.commit()
+                        cursor.execute(q)
+                        checker = cursor.fetchall()[0][0]
                         break
                     except Exception as e:
                         print(e)
-                        self.counter -= 1
                         mysql = pymysql.connect(
-                                                host = keys.mysql_host, 
-                                                port = keys.mysql_port, 
-                                                user = keys.mysql_user, 
-                                                password = keys.mysql_password, 
-                                                database = keys.mysql_database
-                                                )
+                            host = keys.mysql_host, 
+                            port = keys.mysql_port, 
+                            user = keys.mysql_user, 
+                            password = keys.mysql_password, 
+                            database = keys.mysql_database
+                            )   
                         cursor = mysql.cursor()
-                print(temp, self.counter + 'articles crawled')
+                if checker == 0:
+                    query = '''INSERT INTO `%s`(counter, id, title, written_at, content, scrapped_at)
+                                VALUES (%s, %s, %s, %s, %s, %s);'''
+                    values = (int(year), self.counter, id, title, written_at, content, scrapped_at)
+                    while(True):
+                        try:
+                            cursor.execute(query, values)
+                            mysql.commit()
+                            break
+                        except Exception as e:
+                            print(e)
+                            self.counter -= 1
+                            mysql = pymysql.connect(
+                                                    host = keys.mysql_host, 
+                                                    port = keys.mysql_port, 
+                                                    user = keys.mysql_user, 
+                                                    password = keys.mysql_password, 
+                                                    database = keys.mysql_database
+                                                    )
+                            cursor = mysql.cursor()
+                    print(temp, self.counter + 'articles crawled')
+                elif checker == 1:
+                    pass
                 for a in self.driver.find_elements_by_css_selector("button.btn.btn-default"):
                     if (a.text == "닫기"):
                         a.click()
