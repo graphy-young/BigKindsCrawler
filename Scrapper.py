@@ -113,12 +113,12 @@ class Scrapper():
                     except Exception as e:
                         print(e)
                         self.mysql = pymysql.connect(
-                            host = keys.mysql_host, 
-                            port = keys.mysql_port, 
-                            user = keys.mysql_user, 
-                            password = keys.mysql_password, 
-                            database = keys.mysql_database
-                            )   
+                                                    host = keys.mysql_host, 
+                                                    port = keys.mysql_port, 
+                                                    user = keys.mysql_user, 
+                                                    password = keys.mysql_password, 
+                                                    database = keys.mysql_database
+                                                    )   
                         self.cursor = mysql.cursor()
                 if checker == 0:
                     query = '''INSERT INTO `%s`(counter, id, title, written_at, content, scrapped_at)
