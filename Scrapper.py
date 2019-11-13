@@ -140,7 +140,7 @@ class Scrapper():
                                                     database = keys.mysql_database
                                                     )
                             cursor = mysql.cursor()
-                    print(str(self.counter), 'articles crawled')
+                    print(str(self.counter), 'articles crawled\n', 'title:', title, '\n', 'written_at:', written_at, '\n', 'scrapped_at', scapped_at)
                 elif checker == 1:
                     pass
                 for a in self.driver.find_elements_by_css_selector("button.btn.btn-default"):
