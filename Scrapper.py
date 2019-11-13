@@ -25,13 +25,13 @@ class Scrapper():
         #options.add_argument("headless") #without window
         options.add_argument("window-size=1920x1080")
         options.add_argument("disable-gpu")
-        self.driver = webdriver.Chrome(executable_path=r'C:/Users/youngdae/Documents/Python/BigKindsCrawler-master/BigKindsCrawler-master/chromedriver.exe', chrome_options=options)
+        self.driver = webdriver.Chrome(executable_path=r'insert Chromedriver location here', chrome_options=options)
         # self.driver = webdriver.PhantomJS('../bin/phantomjs')
         self.driver.set_page_load_timeout(30)
         #self.driver.implicitly_wait()
 
     def test(self, kwd, year, start, end=None):
-        self.counter = int(start) - 1
+        self.counter = int(start)
         query = 'CREATE TABLE IF NOT EXISTS `%s`.' % keys.mysql_database + '''`%s` (
                 counter INT PRIMARY KEY NOT NULL,
                 id VARCHAR(30) NOT NULL,
