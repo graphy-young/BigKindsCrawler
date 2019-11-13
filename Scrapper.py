@@ -2,7 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from time import sleep
 import random
-import codecs
+#import codecs
 import sys
 import re
 import pymysql
@@ -140,7 +140,7 @@ class Scrapper():
                                                     database = keys.mysql_database
                                                     )
                             self.cursor = self.mysql.cursor()
-                    print(str(int(self.counter)-int(start)), 'articles crawled\n', 'title:', title, '\n', 'written_at:', written_at, '\n', 'scrapped_at', scapped_at)
+                    print(str(int(self.counter)-int(start)), 'articles crawled\n', 'title:', title, '\n', 'written_at:', written_at, '\n', 'scrapped_at', scrapped_at)
                 elif checker == 1:
                     pass
                 for a in self.driver.find_elements_by_css_selector("button.btn.btn-default"):
