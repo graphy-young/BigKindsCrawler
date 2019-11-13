@@ -9,29 +9,29 @@ import pymysql
 import datetime
 import keys
 
-mysql = pymysql.connect(
+class Scrapper():
+    counter = 0
+    mysql = pymysql.connect(
     host = keys.mysql_host, 
     port = keys.mysql_port, 
     user = keys.mysql_user, 
     password = keys.mysql_password, 
     database = keys.mysql_database
     )
-cursor = mysql.cursor()
+    cursor = mysql.cursor()
 
-class Scrapper():
-    
     def setUp(self):
         options = webdriver.ChromeOptions()
         #options.add_argument("headless") #without window
         options.add_argument("window-size=1920x1080")
         options.add_argument("disable-gpu")
-        self.driver = webdriver.Chrome(executable_path=r'C:/Users/ck4ck/Documents/Python/NewsScrapper/driver/chromedriver.exe', chrome_options=options)
+        self.driver = webdriver.Chrome(executable_path=r'C:/Users/youngdae/Documents/Python/BigKindsCrawler-master/BigKindsCrawler-master/chromedriver.exe', chrome_options=options)
         # self.driver = webdriver.PhantomJS('../bin/phantomjs')
         self.driver.set_page_load_timeout(30)
         #self.driver.implicitly_wait()
 
     def test(self, kwd, year, start, end=None):
-        counter = start
+        self.counter = int(start)
         query = 'CREATE TABLE IF NOT EXISTS `%s`.' % keys.mysql_database + '''`%s` (
                 counter INT PRIMARY KEY NOT NULL,
                 id VARCHAR(30) NOT NULL,
@@ -40,7 +40,7 @@ class Scrapper():
                 content TEXT NOT NULL,
                 scrapped_at datetime NOT NULL
             );''' % year
-        cursor.execute(query)
+        self.cursor.execute(query)
         p = 0
         isContinue = False
         if (start != "0"):
@@ -58,7 +58,7 @@ class Scrapper():
         sleep(random.randint(5, 20))
         self.driver.find_element_by_css_selector("span.input-group-btn").click()
         sleep(random.randint(20, 30))
-        self.driver.find_element_by_css_selector("input#filter-date-"+year).click()
+        self.driver.find_element_by_css_selector(("input#filter-date-"+str(year)).click())
         sleep(random.randint(20, 30))
         for op in self.driver.find_elements_by_css_selector("option"):
             if op.get_attribute("value") == "100":
@@ -104,7 +104,7 @@ class Scrapper():
                 content = self.driver.find_element_by_css_selector("div.news-detail__content").text
                 scrapped_at = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 self.counter += 1
-                q = 'SELECT count(counter) FROM `%s` where counter = %s' % (int(year), counter)
+                q = 'SELECT count(counter) FROM `%s` where counter = %s' % (int(year), self.counter)
                 while(True):
                     try:
                         cursor.execute(q)
@@ -156,5 +156,5 @@ class Scrapper():
 if __name__ == '__main__':
     s = Scrapper()
     kwd = "미세먼지"
-    s.test(kwd, "2018", "0")
-    s.test(kwd, "2019", "0")
+    s.test(kwd, 2018, "0")
+    s.test(kwd, 2019, "0")
