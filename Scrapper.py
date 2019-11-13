@@ -43,7 +43,7 @@ class Scrapper():
         self.cursor.execute(query)
         p = 0
         isContinue = False
-        if (start != "0"):
+        if (start != 0):
             p = int(start) / 100
             p = int(p)+1
             isContinue = True
@@ -58,7 +58,7 @@ class Scrapper():
         sleep(random.randint(5, 20))
         self.driver.find_element_by_css_selector("span.input-group-btn").click()
         sleep(random.randint(20, 30))
-        self.driver.find_element_by_css_selector(("input#filter-date-"+str(year)).click())
+        self.driver.find_element_by_css_selector("input#filter-date-"+str(year)).click()
         sleep(random.randint(20, 30))
         for op in self.driver.find_elements_by_css_selector("option"):
             if op.get_attribute("value") == "100":
@@ -140,7 +140,7 @@ class Scrapper():
                                                     database = keys.mysql_database
                                                     )
                             cursor = mysql.cursor()
-                    print(temp, self.counter + 'articles crawled')
+                    print(temp, str(self.counter) + 'articles crawled')
                 elif checker == 1:
                     pass
                 for a in self.driver.find_elements_by_css_selector("button.btn.btn-default"):
@@ -156,5 +156,4 @@ class Scrapper():
 if __name__ == '__main__':
     s = Scrapper()
     kwd = "미세먼지"
-    s.test(kwd, 2018, "0")
-    s.test(kwd, 2019, "0")
+    s.test(kwd, 2017, 1000)
