@@ -108,26 +108,26 @@ class Scrapper():
                 while(True):
                     try:
                         self.cursor.execute(q)
-                        checker = cursor.fetchall()[0][0]
+                        checker = self.cursor.fetchall()[0][0]
                         break
                     except Exception as e:
                         print(e)
-                        mysql = pymysql.connect(
+                        self.mysql = pymysql.connect(
                             host = keys.mysql_host, 
                             port = keys.mysql_port, 
                             user = keys.mysql_user, 
                             password = keys.mysql_password, 
                             database = keys.mysql_database
                             )   
-                        cursor = mysql.cursor()
+                        self.cursor = mysql.cursor()
                 if checker == 0:
                     query = '''INSERT INTO `%s`(counter, id, title, written_at, content, scrapped_at)
                                 VALUES (%s, %s, %s, %s, %s, %s);'''
                     values = (int(year), self.counter, id, title, written_at, content, scrapped_at)
                     while(True):
                         try:
-                            cursor.execute(query, values)
-                            mysql.commit()
+                            self.cursor.execute(query, values)
+                            self.mysql.commit()
                             break
                         except Exception as e:
                             print(e)
@@ -139,7 +139,7 @@ class Scrapper():
                                                     password = keys.mysql_password, 
                                                     database = keys.mysql_database
                                                     )
-                            cursor = mysql.cursor()
+                            self.cursor = self.mysql.cursor()
                     print(str(int(self.counter)-int(start)), 'articles crawled\n', 'title:', title, '\n', 'written_at:', written_at, '\n', 'scrapped_at', scapped_at)
                 elif checker == 1:
                     pass
