@@ -31,7 +31,7 @@ class Scrapper():
         #self.driver.implicitly_wait()
 
     def test(self, kwd, year, start, end=None):
-        self.counter = int(start)
+        self.counter = int(start) - 1
         query = 'CREATE TABLE IF NOT EXISTS `%s`.' % keys.mysql_database + '''`%s` (
                 counter INT PRIMARY KEY NOT NULL,
                 id VARCHAR(30) NOT NULL,
