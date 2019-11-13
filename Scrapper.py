@@ -31,7 +31,7 @@ class Scrapper():
         #self.driver.implicitly_wait()
 
     def test(self, kwd, year, start, end=None):
-        self.counter = int(start)
+        self.counter = int(start) - 1
         query = 'CREATE TABLE IF NOT EXISTS `%s`.' % keys.mysql_database + '''`%s` (
                 counter INT PRIMARY KEY NOT NULL,
                 id VARCHAR(30) NOT NULL,
@@ -107,7 +107,7 @@ class Scrapper():
                 q = 'SELECT count(counter) FROM `%s` where counter = %s' % (int(year), self.counter)
                 while(True):
                     try:
-                        cursor.execute(q)
+                        self.cursor.execute(q)
                         checker = cursor.fetchall()[0][0]
                         break
                     except Exception as e:
@@ -140,7 +140,7 @@ class Scrapper():
                                                     database = keys.mysql_database
                                                     )
                             cursor = mysql.cursor()
-                    print(temp, str(self.counter) + 'articles crawled')
+                    print(str(self.counter), 'articles crawled')
                 elif checker == 1:
                     pass
                 for a in self.driver.find_elements_by_css_selector("button.btn.btn-default"):
