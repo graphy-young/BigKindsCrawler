@@ -142,7 +142,7 @@ class Scrapper():
                                                     database = keys.mysql_database
                                                     )
                             self.cursor = self.mysql.cursor()
-                    print(str(int(self.counter)-int(start)+1), 'articles crawled\n', 'title:', title, '\n', 'written_at:', written_at, '\n', 'scrapped_at', scrapped_at)
+                    print(str(int(self.counter)-int(start)+1), 'articles crawled\n', 'title:', title, '\n', 'written_at:', written_at, '\n', 'scrapped_at', scrapped_at, '\n')
                 elif (checker == 1): dup_cnt += 1
                 for a in self.driver.find_elements_by_css_selector("button.btn.btn-default"):
                     if (a.text == "닫기"):
