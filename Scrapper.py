@@ -67,11 +67,11 @@ class Scrapper():
         total = int(self.driver.find_element_by_css_selector("span#total-news-cnt").text.replace(",",""))
         page = int(total/100) +1
         count = 0
+        dup_cnt = 0
         for i in range(1, page+1):
             #print('i is', i)
             for pnum in self.driver.find_elements_by_css_selector("a.page-link"):
                 #print('pnum:', pnum.text)
-                if (pnum == "다음"): round_cnt += 1
                 if (str(i) == pnum.text) or (pnum.text == '다음'):
                     #print('str(i):', str(i))
                     pnum.click()
@@ -143,8 +143,7 @@ class Scrapper():
                                                     )
                             self.cursor = self.mysql.cursor()
                     print(str(int(self.counter)-int(start)+1), 'articles crawled\n', 'title:', title, '\n', 'written_at:', written_at, '\n', 'scrapped_at', scrapped_at)
-                elif checker == 1:
-                    pass
+                elif (checker == 1): dup_cnt += 1
                 for a in self.driver.find_elements_by_css_selector("button.btn.btn-default"):
                     if (a.text == "닫기"):
                         a.click()
@@ -158,4 +157,4 @@ class Scrapper():
 if __name__ == '__main__':
     s = Scrapper()
     kwd = "미세먼지"
-    s.test(kwd, 2018, 701)
+    s.test(kwd, 2018, 801)
