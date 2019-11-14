@@ -2,7 +2,6 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from time import sleep
 import random
-#import codecs
 import sys
 import re
 import pymysql
@@ -25,7 +24,7 @@ class Scrapper():
         #options.add_argument("headless") #without window
         options.add_argument("window-size=1920x1080")
         options.add_argument("disable-gpu")
-        self.driver = webdriver.Chrome(executable_path=r'insert Chromedriver location here', chrome_options=options)
+        self.driver = webdriver.Chrome(executable_path='/Users/youngdae/Documents/Python/crawling/BigKindsCrawler/chromedriver', chrome_options=options)
         # self.driver = webdriver.PhantomJS('../bin/phantomjs')
         self.driver.set_page_load_timeout(30)
         #self.driver.implicitly_wait()
@@ -69,13 +68,18 @@ class Scrapper():
         page = int(total/100) +1
         count = 0
         for i in range(1, page+1):
+            print('i is', i)
             for pnum in self.driver.find_elements_by_css_selector("a.page-link"):
-                if (str(i) == pnum.text):
+                print('pnum:', pnum.text)
+                if (pnum == "다음"): round_cnt += 1
+                if (str(i) == pnum.text) or (pnum.text == '다음'):
+                    print('str(i):', str(i))
                     pnum.click()
                     sleep(random.randint(20, 30))
                     break
             if (isContinue):
                 if (i < int(p)):
+                    print('add counter')
                     count += 100
                     continue
             for article in self.driver.find_elements_by_css_selector("h4.news-item__title.news-detail"):
@@ -84,9 +88,6 @@ class Scrapper():
                     if(count < int(start)):
                         continue
                 id = article.get_attribute("data-newsid")
-                #fw = codecs.open("C:/Users/ck4ck/Documents/Python/NewsScrapper/"+year+"/"+str(count)+".txt", "w", encoding="utf-8")
-                #fw.write(id+"\n")
-                #fw.write(article.text+"\n")
                 title = article.text
                 article.click()
                 sleep(random.randint(5, 20))
@@ -98,12 +99,13 @@ class Scrapper():
                     written_at = re.findall('\d\d\d\d-\d\d-\d\d', headline)[0]
                 except Exception as e:
                     written_at = None
-                #fw.write(temp + "@@@@@\n")
-                #fw.write(self.driver.find_element_by_css_selector("div.news-detail__content").text)
-                #fw.close()
                 content = self.driver.find_element_by_css_selector("div.news-detail__content").text
                 scrapped_at = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 self.counter += 1
+                if (end == None): pass
+                elif (self.counter > end):
+                    print('Counter reaches the endpoint. Goodbye!')
+                    sys.exit()
                 q = 'SELECT count(counter) FROM `%s` where counter = %s' % (int(year), self.counter)
                 while(True):
                     try:
@@ -119,7 +121,7 @@ class Scrapper():
                                                     password = keys.mysql_password, 
                                                     database = keys.mysql_database
                                                     )   
-                        self.cursor = mysql.cursor()
+                        self.cursor = self.mysql.cursor()
                 if checker == 0:
                     query = '''INSERT INTO `%s`(counter, id, title, written_at, content, scrapped_at)
                                 VALUES (%s, %s, %s, %s, %s, %s);'''
@@ -140,7 +142,7 @@ class Scrapper():
                                                     database = keys.mysql_database
                                                     )
                             self.cursor = self.mysql.cursor()
-                    print(str(int(self.counter)-int(start)), 'articles crawled\n', 'title:', title, '\n', 'written_at:', written_at, '\n', 'scrapped_at', scrapped_at)
+                    print(str(int(self.counter)-int(start)+1), 'articles crawled\n', 'title:', title, '\n', 'written_at:', written_at, '\n', 'scrapped_at', scrapped_at)
                 elif checker == 1:
                     pass
                 for a in self.driver.find_elements_by_css_selector("button.btn.btn-default"):
@@ -156,4 +158,4 @@ class Scrapper():
 if __name__ == '__main__':
     s = Scrapper()
     kwd = "미세먼지"
-    s.test(kwd, 2017, 1000)
+    s.test(kwd, 2018, 701)
