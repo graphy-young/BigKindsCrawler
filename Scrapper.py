@@ -24,8 +24,8 @@ class Scrapper():
         #options.add_argument("headless") #without window
         options.add_argument("window-size=1920x1080")
         options.add_argument("disable-gpu")
-        self.driver = webdriver.Chrome(executable_path='/Users/youngdae/Documents/Python/crawling/BigKindsCrawler/chromedriver', chrome_options=options)
-        # self.driver = webdriver.PhantomJS('../bin/phantomjs')
+        self.driver = webdriver.Chrome(executable_path='INSERT CHROMEDRIVER PATH HERE', chrome_options=options)
+        #self.driver = webdriver.PhantomJS('../bin/phantomjs')
         self.driver.set_page_load_timeout(30)
         #self.driver.implicitly_wait()
 
