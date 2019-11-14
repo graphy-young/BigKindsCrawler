@@ -134,7 +134,7 @@ class Scrapper():
                         except Exception as e:
                             print(e)
                             self.counter -= 1
-                            mysql = pymysql.connect(
+                            self.mysql = pymysql.connect(
                                                     host = keys.mysql_host, 
                                                     port = keys.mysql_port, 
                                                     user = keys.mysql_user, 
