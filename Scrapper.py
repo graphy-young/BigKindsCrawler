@@ -24,8 +24,8 @@ class Scrapper():
         #options.add_argument("headless") #without window
         options.add_argument("window-size=1920x1080")
         options.add_argument("disable-gpu")
-        self.driver = webdriver.Chrome(executable_path='INSERT CHROMEDRIVER PATH HERE', chrome_options=options)
-        #self.driver = webdriver.PhantomJS('../bin/phantomjs')
+        self.driver = webdriver.Chrome(executable_path='/Users/.../BigKindsCrawler/chromedriver', chrome_options=options)
+        # self.driver = webdriver.PhantomJS('../bin/phantomjs')
         self.driver.set_page_load_timeout(30)
         #self.driver.implicitly_wait()
 
@@ -68,18 +68,18 @@ class Scrapper():
         page = int(total/100) +1
         count = 0
         for i in range(1, page+1):
-            print('i is', i)
+            #print('i is', i)
             for pnum in self.driver.find_elements_by_css_selector("a.page-link"):
-                print('pnum:', pnum.text)
+                #print('pnum:', pnum.text)
                 if (pnum == "다음"): round_cnt += 1
                 if (str(i) == pnum.text) or (pnum.text == '다음'):
-                    print('str(i):', str(i))
+                    #print('str(i):', str(i))
                     pnum.click()
                     sleep(random.randint(20, 30))
                     break
             if (isContinue):
                 if (i < int(p)):
-                    print('add counter')
+                    #print('add counter')
                     count += 100
                     continue
             for article in self.driver.find_elements_by_css_selector("h4.news-item__title.news-detail"):
