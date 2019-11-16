@@ -71,7 +71,7 @@ class Scrapper():
         #count = 0
         dup_cnt = 0
         for i in range(1, page+1):
-            print('i is', i)
+            #print('i is', i)
             if (isContinue):
                 if ((i//7) < (p//7)): continue
                 elif (i < p) and (i%7 == 0):
@@ -80,9 +80,9 @@ class Scrapper():
                     continue
                 elif (i < p): continue
             for pnum in self.driver.find_elements_by_css_selector("a.page-link"):
-                print('pnum:', pnum.text)
+                #print('pnum:', pnum.text)
                 if (str(i) == pnum.text) or (pnum.text == '다음'):
-                    print('str(i):', str(i))
+                    #print('str(i):', str(i))
                     pnum.click()
                     sleep(random.randint(20, 30))
                     break
