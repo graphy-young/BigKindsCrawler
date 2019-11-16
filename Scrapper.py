@@ -24,7 +24,7 @@ class Scrapper():
         #options.add_argument("headless") #without window
         options.add_argument("window-size=1920x1080")
         options.add_argument("disable-gpu")
-        self.driver = webdriver.Chrome(executable_path='/Users/.../BigKindsCrawler/chromedriver', chrome_options=options)
+        self.driver = webdriver.Chrome(executable_path='/Users/.../BigKindsCrawler/chromedriver', options=options)
         # self.driver = webdriver.PhantomJS('../bin/phantomjs')
         self.driver.set_page_load_timeout(30)
         #self.driver.implicitly_wait()
@@ -66,22 +66,26 @@ class Scrapper():
                 break
         total = int(self.driver.find_element_by_css_selector("span#total-news-cnt").text.replace(",",""))
         page = int(total/100) +1
-        count = 0
+        if (isContinue): count = (p-1) * 100
+        else: count = 0
+        #count = 0
         dup_cnt = 0
         for i in range(1, page+1):
-            #print('i is', i)
+            print('i is', i)
+            if (isContinue):
+                if ((i//7) < (p//7)): continue
+                elif (i < p) and (i%7 == 0):
+                    self.driver.find_element_by_css_selector('#news-results-pagination > ul > li:nth-child(10) > a').click()
+                    sleep(random.randint(20, 30))
+                    continue
+                elif (i < p): continue
             for pnum in self.driver.find_elements_by_css_selector("a.page-link"):
-                #print('pnum:', pnum.text)
+                print('pnum:', pnum.text)
                 if (str(i) == pnum.text) or (pnum.text == '다음'):
-                    #print('str(i):', str(i))
+                    print('str(i):', str(i))
                     pnum.click()
                     sleep(random.randint(20, 30))
                     break
-            if (isContinue):
-                if (i < int(p)):
-                    #print('add counter')
-                    count += 100
-                    continue
             for article in self.driver.find_elements_by_css_selector("h4.news-item__title.news-detail"):
                 count+=1
                 if(isContinue):
@@ -109,39 +113,41 @@ class Scrapper():
                 q = 'SELECT count(counter) FROM `%s` where counter = %s' % (int(year), self.counter)
                 while(True):
                     try:
+                        self.mysql = pymysql.connect(
+                            host = keys.mysql_host, 
+                            port = keys.mysql_port, 
+                            user = keys.mysql_user, 
+                            password = keys.mysql_password, 
+                            database = keys.mysql_database
+                            )   
+                        self.cursor = self.mysql.cursor()
                         self.cursor.execute(q)
                         checker = self.cursor.fetchall()[0][0]
                         break
                     except Exception as e:
                         print(e)
-                        self.mysql = pymysql.connect(
-                                                    host = keys.mysql_host, 
-                                                    port = keys.mysql_port, 
-                                                    user = keys.mysql_user, 
-                                                    password = keys.mysql_password, 
-                                                    database = keys.mysql_database
-                                                    )   
-                        self.cursor = self.mysql.cursor()
+                        sleep(3)
                 if checker == 0:
                     query = '''INSERT INTO `%s`(counter, id, title, written_at, content, scrapped_at)
                                 VALUES (%s, %s, %s, %s, %s, %s);'''
                     values = (int(year), self.counter, id, title, written_at, content, scrapped_at)
                     while(True):
                         try:
+                            self.mysql = pymysql.connect(
+                                                        host = keys.mysql_host, 
+                                                        port = keys.mysql_port, 
+                                                        user = keys.mysql_user, 
+                                                        password = keys.mysql_password, 
+                                                        database = keys.mysql_database
+                                                        )
+                            self.cursor = self.mysql.cursor()
                             self.cursor.execute(query, values)
                             self.mysql.commit()
                             break
                         except Exception as e:
                             print(e)
                             self.counter -= 1
-                            self.mysql = pymysql.connect(
-                                                    host = keys.mysql_host, 
-                                                    port = keys.mysql_port, 
-                                                    user = keys.mysql_user, 
-                                                    password = keys.mysql_password, 
-                                                    database = keys.mysql_database
-                                                    )
-                            self.cursor = self.mysql.cursor()
+                            sleep(3)
                     print(str(int(self.counter)-int(start)+1), 'articles crawled\n', 'title:', title, '\n', 'written_at:', written_at, '\n', 'scrapped_at', scrapped_at, '\n')
                 elif (checker == 1): dup_cnt += 1
                 for a in self.driver.find_elements_by_css_selector("button.btn.btn-default"):
@@ -157,4 +163,4 @@ class Scrapper():
 if __name__ == '__main__':
     s = Scrapper()
     kwd = "미세먼지"
-    s.test(kwd, 2018, 801)
+    s.test(kwd, 2017, 503)
