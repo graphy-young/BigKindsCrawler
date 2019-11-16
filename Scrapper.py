@@ -73,7 +73,7 @@ class Scrapper():
         for i in range(1, page+1):
             #print('i is', i)
             if (isContinue):
-                if ((i//7) < (p//7)): continue
+                if ((i//7) < (p//7)) and (1%7 != 0): continue
                 elif (i < p) and (i%7 == 0):
                     self.driver.find_element_by_css_selector('#news-results-pagination > ul > li:nth-child(10) > a').click()
                     sleep(random.randint(20, 30))
