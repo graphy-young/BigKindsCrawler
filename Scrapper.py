@@ -108,6 +108,7 @@ class Scrapper():
                 self.counter += 1
                 if (end == None): pass
                 elif (self.counter > end):
+                    self.teardown()
                     print('Counter reaches the endpoint. Goodbye!')
                     sys.exit()
                 q = 'SELECT count(counter) FROM `%s` where counter = %s' % (int(year), self.counter)
