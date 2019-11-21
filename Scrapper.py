@@ -24,7 +24,7 @@ class Scrapper():
         #options.add_argument("headless") #without window
         options.add_argument("window-size=1920x1080")
         options.add_argument("disable-gpu")
-        self.driver = webdriver.Chrome(executable_path='/Users/.../BigKindsCrawler/chromedriver', options=options)
+        self.driver = webdriver.Chrome(executable_path='chromedriver.exe', options=options)
         # self.driver = webdriver.PhantomJS('../bin/phantomjs')
         self.driver.set_page_load_timeout(30)
         #self.driver.implicitly_wait()
@@ -71,18 +71,18 @@ class Scrapper():
         #count = 0
         dup_cnt = 0
         for i in range(1, page+1):
-            #print('i is', i)
+            print('i is', i)
             if (isContinue):
-                if ((i//7) < (p//7)) and (1%7 != 0): continue
+                if ((i//7) < (p//7)) and (i%7 != 0): continue
                 elif (i < p) and (i%7 == 0):
                     self.driver.find_element_by_css_selector('#news-results-pagination > ul > li:nth-child(10) > a').click()
                     sleep(random.randint(20, 30))
                     continue
                 elif (i < p): continue
             for pnum in self.driver.find_elements_by_css_selector("a.page-link"):
-                #print('pnum:', pnum.text)
+                print('pnum:', pnum.text)
                 if (str(i) == pnum.text) or (pnum.text == '다음'):
-                    #print('str(i):', str(i))
+                    print('str(i):', str(i))
                     pnum.click()
                     sleep(random.randint(20, 30))
                     break
@@ -108,7 +108,6 @@ class Scrapper():
                 self.counter += 1
                 if (end == None): pass
                 elif (self.counter > end):
-                    self.teardown()
                     print('Counter reaches the endpoint. Goodbye!')
                     sys.exit()
                 q = 'SELECT count(counter) FROM `%s` where counter = %s' % (int(year), self.counter)
@@ -164,4 +163,4 @@ class Scrapper():
 if __name__ == '__main__':
     s = Scrapper()
     kwd = "미세먼지"
-    s.test(kwd, 2017, 503)
+    s.test(kwd, 2017, 1)
