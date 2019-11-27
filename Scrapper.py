@@ -10,13 +10,11 @@ import keys
 
 class Scrapper():
     counter = 0
-    mysql = pymysql.connect(
-    host = keys.mysql_host, 
-    port = keys.mysql_port, 
-    user = keys.mysql_user, 
-    password = keys.mysql_password, 
-    database = keys.mysql_database
-    )
+    mysql = pymysql.connect(host = keys.mysql_host, 
+                            port = keys.mysql_port, 
+                            user = keys.mysql_user, 
+                            password = keys.mysql_password, 
+                            database = keys.mysql_database)
     cursor = mysql.cursor()
 
     def setUp(self):
@@ -29,6 +27,14 @@ class Scrapper():
         self.driver.set_page_load_timeout(30)
         #self.driver.implicitly_wait()
 
+    def connect_mysql(self):
+        mysql = pymysql.connect(host = keys.mysql_host, 
+                        port = keys.mysql_port, 
+                        user = keys.mysql_user, 
+                        password = keys.mysql_password, 
+                        database = keys.mysql_database)
+        cursor = mysql.cursor()
+        
     def scrap(self, kwd, year, start, end=None, reverse=False):
         self.counter = int(start) - 1
         query = 'CREATE TABLE IF NOT EXISTS `%s`.' % keys.mysql_database + '''`%s` (
@@ -99,7 +105,7 @@ class Scrapper():
                     article.click()
                 except:
                     self.driver.close()
-                    self.scrap(kwd=kwd, year=year, start=self.counter, end=end, reverse=isReversed)
+                    self.scrap(kwd=kwd, year=year, start=self.counter, end=end, reverse=reverse)
                     return 0
                 sleep(random.randint(5, 20))
                 temp = ""
@@ -125,13 +131,11 @@ class Scrapper():
                         break
                     except Exception as e:
                         print(e)
-                        self.mysql = pymysql.connect(
-                                                    host = keys.mysql_host, 
+                        self.mysql = pymysql.connect(host = keys.mysql_host, 
                                                     port = keys.mysql_port, 
                                                     user = keys.mysql_user, 
                                                     password = keys.mysql_password, 
-                                                    database = keys.mysql_database
-                                                    )   
+                                                    database = keys.mysql_database)   
                         self.cursor = self.mysql.cursor()
                 if checker == 0:
                     query = '''INSERT INTO `%s`(counter, id, title, written_at, content, scrapped_at)
@@ -145,13 +149,11 @@ class Scrapper():
                         except Exception as e:
                             print(e)
                             self.counter -= 1
-                            self.mysql = pymysql.connect(
-                                                    host = keys.mysql_host, 
-                                                    port = keys.mysql_port, 
-                                                    user = keys.mysql_user, 
-                                                    password = keys.mysql_password, 
-                                                    database = keys.mysql_database
-                                                    )
+                            self.mysql = pymysql.connect(host = keys.mysql_host, 
+                                                        port = keys.mysql_port, 
+                                                        user = keys.mysql_user, 
+                                                        password = keys.mysql_password, 
+                                                        database = keys.mysql_database)
                             self.cursor = self.mysql.cursor()
                     print(str(int(self.counter)-int(start)+1), 'articles crawled\n', 'title:', title, '\n', 'written_at:', written_at, '\n', 'scrapped_at', scrapped_at, '\n')
                 elif (checker == 1): dup_cnt += 1
