@@ -31,7 +31,6 @@ class Scrapper():
 
     def scrap(self, kwd, year, start, end=None, reverse=False):
         self.counter = int(start) - 1
-        isReversed = reverse
         query = 'CREATE TABLE IF NOT EXISTS `%s`.' % keys.mysql_database + '''`%s` (
                 counter INT PRIMARY KEY NOT NULL,
                 id VARCHAR(30) NOT NULL,
@@ -65,7 +64,7 @@ class Scrapper():
                 op.click()
                 sleep(random.randint(20, 30))
                 break
-        if isReversed:
+        if !(reverse):
             #self.driver.find_element_by_css_selector('#collapse-step-2 > div > div > div.col-sm-9.col-lg-10 > div:nth-child(3) > div > div.col-xs-12.col-lg-4.col-sm-7.text-right > div:nth-child(1) > select').click()
             #sleep(random.randint(5, 20))
             self.driver.find_element_by_css_selector('#collapse-step-2 > div > div > div.col-sm-9.col-lg-10 > div:nth-child(3) > div > div.col-xs-12.col-lg-4.col-sm-7.text-right > div:nth-child(1) > select > option:nth-child(3)').click()
