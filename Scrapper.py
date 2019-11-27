@@ -64,7 +64,7 @@ class Scrapper():
                 op.click()
                 sleep(random.randint(20, 30))
                 break
-        if !(reverse):
+        if not (reverse):
             #self.driver.find_element_by_css_selector('#collapse-step-2 > div > div > div.col-sm-9.col-lg-10 > div:nth-child(3) > div > div.col-xs-12.col-lg-4.col-sm-7.text-right > div:nth-child(1) > select').click()
             #sleep(random.randint(5, 20))
             self.driver.find_element_by_css_selector('#collapse-step-2 > div > div > div.col-sm-9.col-lg-10 > div:nth-child(3) > div > div.col-xs-12.col-lg-4.col-sm-7.text-right > div:nth-child(1) > select > option:nth-child(3)').click()
